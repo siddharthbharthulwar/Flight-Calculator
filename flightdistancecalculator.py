@@ -2,6 +2,8 @@
 #airports in the world. 
 
 import math
+import tkinter as tk
+import requests
 
 radius = 3958
 
@@ -14,40 +16,43 @@ codeList= []
 countryList = []
 orderedCodeList = []
 cityNameList = []
+localBoolean = False
 
 def airportListSetup():
-    f = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\icao.txt", 'r')
-    for line in f:
-        icaoList.append(line.strip())
+    if localBoolean == True:
+        f = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\icao.txt", 'r')
+        for line in f:
+            icaoList.append(line.strip())
     
-    latitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\latitudes.txt", 'r')
-    for line in latitudeSetup:
-        latitudeList.append(line.strip())
+        latitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\latitudes.txt", 'r')
+        for line in latitudeSetup:
+            latitudeList.append(line.strip())
     
-    longitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\longitudes.txt", 'r')
-    for line in longitudeSetup: 
-        longitudeList.append(line.strip())
+        longitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\longitudes.txt", 'r')
+        for line in longitudeSetup: 
+            longitudeList.append(line.strip())
 
-    nameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\airportNames.txt", 'r', encoding="utf8")
-    for line in nameSetup:
-        airportNameList.append(line.strip())
+        nameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\airportNames.txt", 'r', encoding="utf8")
+        for line in nameSetup:
+            airportNameList.append(line.strip())
     
-    codeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\codes.txt", 'r', encoding = "utf8")
-    for line in codeSetup:
-        codeList.append(line.strip())
+        codeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\codes.txt", 'r', encoding = "utf8")
+        for line in codeSetup:
+            codeList.append(line.strip())
         
-    countrySetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\countries.txt", 'r', encoding="utf8")
-    for line in countrySetup:
-        countryList.append(line.strip())
+        countrySetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\countries.txt", 'r', encoding="utf8")
+        for line in countrySetup:
+            countryList.append(line.strip())
 
-    orderedAirportSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\orderedairportcodes.txt", 'r', encoding="utf8")
-    for line in orderedAirportSetup:
-        orderedCodeList.append(line.strip())
+        orderedAirportSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\orderedairportcodes.txt", 'r', encoding="utf8")
+        for line in orderedAirportSetup:
+            orderedCodeList.append(line.strip())
     
-    cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
-    for line in cityNameSetup:
-        cityNameList.append(line.strip())
-
+        cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
+        for line in cityNameSetup:
+            cityNameList.append(line.strip())
+    if localBoolean == False:
+        print("unfinished")
 
 #imports information for all large and medium airports in the world and appends each piece
 # of information into a separate list for later reference. 
@@ -168,39 +173,61 @@ def flightTime():
 #at maximum cruise speed. 
 
 
-from tkinter import * 
-gui = Tk()
+gui = tk.Tk()
 gui.configure(background = "grey17")
 gui.title(" ")
 gui.geometry("250x150")
-gui.resizable(width=FALSE, height=FALSE)
-
-initialInput = StringVar()
-destinationInput = StringVar()
-speedInput = StringVar()
-windSpeedInput = StringVar()
-windAngleInput = StringVar()
 
 
+initialInput = tk.StringVar()
+destinationInput = tk.StringVar()
+speedInput = tk.StringVar()
+windSpeedInput = tk.StringVar()
+windAngleInput = tk.StringVar()
 
-initialField = Entry(gui, textvariable=initialInput, bg="grey30", fg="gray97", bd=0)
-destinationField = Entry(gui, textvariable = destinationInput, bg="grey30", fg="gray97", bd=0)
-speedField = Entry(gui, textvariable=speedInput, bg="grey30", fg="gray97", bd=0)
-windSpeedField = Entry(gui, textvariable=windSpeedInput, bg="grey30", fg="gray97", bd=0)
-windAngleField = Entry(gui, textvariable=windAngleInput, bg="grey30", fg="gray97", bd=0)
 
-Label(gui, text="Flight Distance Calculator", bg="grey17", fg="gray97").grid(row=0)
-Label(gui, text="Starting Airport :                ", bg="grey17", fg="gray97", anchor="e").grid(row=1)
-Label(gui, text="Destination Airport :          ", bg="grey17", fg="gray97", anchor="e").grid(row=2)
-Label(gui, text="Indicated Airspeed :          ", bg="grey17", fg="gray97", anchor="e").grid(row=3)
-Label(gui, text="Wind Speed :                      ", bg="grey17", fg="gray97", anchor="e").grid(row=4)
-Label(gui, text="Angle of Wind :                  ", bg="grey17", fg="gray97", anchor="e").grid(row=5)
+
+initialField = tk.Entry(gui, textvariable=initialInput, bg="grey30", fg="gray97", bd=0)
+destinationField = tk.Entry(gui, textvariable = destinationInput, bg="grey30", fg="gray97", bd=0)
+speedField = tk.Entry(gui, textvariable=speedInput, bg="grey30", fg="gray97", bd=0)
+windSpeedField = tk.Entry(gui, textvariable=windSpeedInput, bg="grey30", fg="gray97", bd=0)
+windAngleField = tk.Entry(gui, textvariable=windAngleInput, bg="grey30", fg="gray97", bd=0)
+
+flightDistanceCalculatorlabel = tk.Label(gui, text="Flight Distance Calculator", bg="grey17", fg="gray97")
+initialAirportLabel = tk.Label(gui, text="Starting Airport :                ", bg="grey17", fg="gray97", anchor="e")
+destinationAirportLabel = tk.Label(gui, text="Destination Airport :          ", bg="grey17", fg="gray97", anchor="e")
+indicatedAirspeedLabel = tk.Label(gui, text="Indicated Airspeed :          ", bg="grey17", fg="gray97", anchor="e")
+windSpeedLabel = tk.Label(gui, text="Wind Speed :                      ", bg="grey17", fg="gray97", anchor="e")
+angleOfWindLabel = tk.Label(gui, text="Angle of Wind :                  ", bg="grey17", fg="gray97", anchor="e")
 
 initialField.grid(row=1, column=1)
 destinationField.grid(row=2, column=1)
 speedField.grid(row=3, column=1)
 windSpeedField.grid(row=4, column=1)
 windAngleField.grid(row=5, column=1)
+
+flightDistanceCalculatorlabel.grid(row=0)
+initialAirportLabel.grid(row=1)
+destinationAirportLabel.grid(row=2)
+indicatedAirspeedLabel.grid(row=3)
+windSpeedLabel.grid(row=4)
+angleOfWindLabel.grid(row=5)
+
+initialNameDisplay = tk.Label(gui, text="", bg="gray17", fg="gray97")
+finalTimeDisplay = tk.Label(gui, text="", bg="gray17", fg="gray97")
+finalDistance = tk.Label(gui, text="", bg="gray17", fg="gray97")
+ttkgroundSpeed = tk.Label(gui, text="", bg="gray17", fg="gray97")
+initialLocation = tk.Label(gui, text="", bg="gray17", fg="gray97", anchor="w")
+destinationLocation = tk.Label(gui, text="", bg="gray17", fg="gray97", anchor="w")
+destinationNametk = tk.Label(gui, text="", bg="gray17", fg="gray97")
+
+initialNameDisplay.grid(row=0, column=3, columnspan=2)
+finalTimeDisplay.grid(row=2, column=3)
+finalDistance.grid(row=3, column=3)
+ttkgroundSpeed.grid(row=4, column=3)
+initialLocation.grid(row=1, column=3)
+destinationLocation.grid(row=5, column=3)
+destinationNametk.grid(row=6, column=3)
 
 def executeCalculation():
     airportListSetup()
@@ -221,13 +248,20 @@ def executeCalculation():
     airportDistance()
     windVectorAddition()
     flightTime()
-    finalTimeString = StringVar()
-    finalDistanceString = StringVar()
-    groundSpeedString = StringVar()
-    initialLocationString = StringVar()
-    initialName = StringVar()
-    destinationName = StringVar()
-    destinationLocationString = StringVar()
+    finalTimeString = tk.StringVar()
+    finalDistanceString = tk.StringVar()
+    groundSpeedString = tk.StringVar()
+    initialLocationString = tk.StringVar()
+    initialName = tk.StringVar()
+    destinationName = tk.StringVar()
+    destinationLocationString = tk.StringVar()
+    initialNameDisplay.config(text=initialName)
+    finalTimeDisplay.config(text=finalTimeString)
+    finalDistance.config(text=finalDistanceString)
+    ttkgroundSpeed.config(text=groundSpeedString)
+    initialLocation.config(text=initialLocationString)
+    destinationLocation.config(text=destinationLocationString)
+    destinationNametk.config(text=destinationName)
     groundSpeedString = round(groundSpeed,2), "mph"
     initialLocationString = "↑ {}, {}".format(initialCity, initialCountryName)
     destinationLocationString = "↓ {}, {}".format(destinationCity, destinationCountryName)
@@ -237,16 +271,9 @@ def executeCalculation():
     else:
         finalTimeString = flightHours , "hours" , flightMinutes, "minutes"
     gui.geometry("500x150")
-    initialNameDisplay = Label(gui, text=initialName, bg="gray17", fg="gray97").grid(row=0, column=3, columnspan=2)
-    finalTimeDisplay = Label(gui, text=finalTimeString, bg="gray17", fg="gray97").grid(row=2, column=3)
-    finalDistance = Label(gui, text=finalDistanceString, bg="gray17", fg="gray97").grid(row=3, column=3)
-    groundSpeed = Label(gui, text=groundSpeedString, bg="gray17", fg="gray97").grid(row=4, column=3)
-    initialLocation = Label(gui, text=initialLocationString, bg="gray17", fg="gray97", anchor="w").grid(row=1, column=3)
-    destinationLocation = Label(gui, text=destinationLocationString, bg="gray17", fg="gray97", anchor="w").grid(row=5, column=3)
-    destinationName = Label(gui, text=destinationName, bg="gray17", fg="gray97").grid(row=6, column=3)
 
     
-execute = Button(gui, text="Calculate", command=executeCalculation, width=37, fg="gray97", bg="gray30", bd=0)
+execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37, fg="gray97", bg="gray30", bd=0)
 execute.grid(columnspan=2)
 
 gui.mainloop()
