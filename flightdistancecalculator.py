@@ -17,10 +17,10 @@ codeList= []
 countryList = []
 orderedCodeList = []
 cityNameList = []
-localBoolean = False
+source = "DESKTOP"
 
 def airportListSetup():
-    if localBoolean == True:
+    if source == "LAPTOP":
         f = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\icao.txt", 'r')
         for line in f:
             icaoList.append(line.strip())
@@ -52,8 +52,40 @@ def airportListSetup():
         cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
         for line in cityNameSetup:
             cityNameList.append(line.strip())
-    if localBoolean == False:
+    if source == "GITHUB":
         icaoUrl = 'https://api.github.com/repos/sbharthulwar01/contents/flightcalculator/FlightCalculator/resources/airportNames.txt'
+    if source == "DESKTOP":
+        f = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\icao.txt", 'r')
+        for line in f:
+            icaoList.append(line.strip())
+    
+        latitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\latitudes.txt", 'r')
+        for line in latitudeSetup:
+            latitudeList.append(line.strip())
+    
+        longitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\longitudes.txt", 'r')
+        for line in longitudeSetup: 
+            longitudeList.append(line.strip())
+
+        nameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\airportNames.txt", 'r', encoding="utf8")
+        for line in nameSetup:
+            airportNameList.append(line.strip())
+    
+        codeSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\codes.txt", 'r', encoding = "utf8")
+        for line in codeSetup:
+            codeList.append(line.strip())
+        
+        countrySetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\countries.txt", 'r', encoding="utf8")
+        for line in countrySetup:
+            countryList.append(line.strip())
+
+        orderedAirportSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\orderedairportcodes.txt", 'r', encoding="utf8")
+        for line in orderedAirportSetup:
+            orderedCodeList.append(line.strip())
+    
+        cityNameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\citynames.txt", 'r', encoding="utf8")
+        for line in cityNameSetup:
+            cityNameList.append(line.strip())
         
       
 
@@ -241,6 +273,8 @@ def executeCalculation():
     global windSpeed
     global flightHours
     global flightMinutes
+    global initialName
+    global destinationName
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
@@ -255,16 +289,9 @@ def executeCalculation():
     finalDistanceString = tk.StringVar()
     groundSpeedString = tk.StringVar()
     initialLocationString = tk.StringVar()
-    initialName = tk.StringVar()
-    destinationName = tk.StringVar()
+    initialNameString = tk.StringVar()
+    destinationNameString = tk.StringVar()
     destinationLocationString = tk.StringVar()
-    initialNameDisplay.config(text=initialName)
-    finalTimeDisplay.config(text=finalTimeString)
-    finalDistance.config(text=finalDistanceString)
-    ttkgroundSpeed.config(text=groundSpeedString)
-    initialLocation.config(text=initialLocationString)
-    destinationLocation.config(text=destinationLocationString)
-    destinationNametk.config(text=destinationName)
     groundSpeedString = round(groundSpeed,2), "mph"
     initialLocationString = "↑ {}, {}".format(initialCity, initialCountryName)
     destinationLocationString = "↓ {}, {}".format(destinationCity, destinationCountryName)
@@ -273,11 +300,20 @@ def executeCalculation():
         finalTimeString = round(flightMinutes, 1), "minutes"
     else:
         finalTimeString = flightHours , "hours" , flightMinutes, "minutes"
+    initialNameString = initialName
+    destinationNameString = destinationName
     gui.geometry("500x150")
+    initialNameDisplay.config(text=initialNameString)
+    finalTimeDisplay.config(text=finalTimeString)
+    finalDistance.config(text=finalDistanceString)
+    ttkgroundSpeed.config(text=groundSpeedString)
+    initialLocation.config(text=initialLocationString)
+    destinationLocation.config(text=destinationLocationString)
+    destinationNametk.config(text=destinationNameString)
 
     
 execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37, fg="gray97", bg="gray30", bd=0)
-execute.grid(columnspan=2)
+execute.grid(row=6, columnspan=2)
 
 gui.mainloop()
 
