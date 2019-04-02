@@ -3,8 +3,6 @@
 
 import math
 import tkinter as tk
-import requests
-import base64
 
 radius = 3958
 
@@ -52,8 +50,6 @@ def airportListSetup():
         cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
         for line in cityNameSetup:
             cityNameList.append(line.strip())
-    if source == "GITHUB":
-        icaoUrl = 'https://api.github.com/repos/sbharthulwar01/contents/flightcalculator/FlightCalculator/resources/airportNames.txt'
     if source == "DESKTOP":
         f = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\icao.txt", 'r')
         for line in f:
