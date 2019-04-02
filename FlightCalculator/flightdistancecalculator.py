@@ -1,13 +1,12 @@
 #this is a calculator to determine the flight time between any two medium or large
-#airports in the world. 
+#airports in the world. Input all speeds in terms of miles and use ICAO codes of airports
+#currently supports 5178 airports around the world(large and medium airports)
+#encoding utf-8
 
 import math
 import tkinter as tk
-import requests
 
-radius = 3958
-
-
+radius = 3958 #radius of earth(in miles)
 icaoList = []
 latitudeList = []
 longitudeList = []
@@ -16,10 +15,14 @@ codeList= []
 countryList = []
 orderedCodeList = []
 cityNameList = []
-localBoolean = False
+source = "DESKTOP"
+#if source is personal desktop, enter DESKTOP for source
+#if source is personal laptop, enter LAPTOP for source
+#currently this program only works with two of my personal computers because the data required to run the program is stored only on these two computers. 
+#full external support coming soon
 
 def airportListSetup():
-    if localBoolean == True:
+    if source == "LAPTOP":
         f = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\icao.txt", 'r')
         for line in f:
             icaoList.append(line.strip())
@@ -51,8 +54,40 @@ def airportListSetup():
         cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
         for line in cityNameSetup:
             cityNameList.append(line.strip())
-    if localBoolean == False:
-        print("unfinished")
+    if source == "DESKTOP":
+        f = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\icao.txt", 'r')
+        for line in f:
+            icaoList.append(line.strip())
+    
+        latitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\latitudes.txt", 'r')
+        for line in latitudeSetup:
+            latitudeList.append(line.strip())
+    
+        longitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\longitudes.txt", 'r')
+        for line in longitudeSetup: 
+            longitudeList.append(line.strip())
+
+        nameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\airportNames.txt", 'r', encoding="utf8")
+        for line in nameSetup:
+            airportNameList.append(line.strip())
+    
+        codeSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\codes.txt", 'r', encoding = "utf8")
+        for line in codeSetup:
+            codeList.append(line.strip())
+        
+        countrySetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\countries.txt", 'r', encoding="utf8")
+        for line in countrySetup:
+            countryList.append(line.strip())
+
+        orderedAirportSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\orderedairportcodes.txt", 'r', encoding="utf8")
+        for line in orderedAirportSetup:
+            orderedCodeList.append(line.strip())
+    
+        cityNameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\citynames.txt", 'r', encoding="utf8")
+        for line in cityNameSetup:
+            cityNameList.append(line.strip())
+    
+      
 
 #imports information for all large and medium airports in the world and appends each piece
 # of information into a separate list for later reference. 
@@ -144,7 +179,7 @@ def airportDistance():
     distance = radius * c
 
 #this function calculates the great circle distance between two points on Earth using the 
-#haversine formula and trigonometry. 
+#haversine formula. 
 
 def windVectorAddition():
     global groundSpeed
@@ -153,7 +188,7 @@ def windVectorAddition():
     global windAngleDifference
     groundSpeed = math.sqrt(((indicatedAirSpeed ** 2) + windSpeed) - 2 * (indicatedAirSpeed * windSpeed * math.cos(windAngleDifference)))
 
-#this function accounts for the speed of wind affecting the flight of the aircraft using vectors
+#this function accounts for the speed of wind affecting the flight of the aircraft using vector addition
 
 def flightTime():
     global timeOfFlight
@@ -238,6 +273,8 @@ def executeCalculation():
     global windSpeed
     global flightHours
     global flightMinutes
+    global initialName
+    global destinationName
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
@@ -252,16 +289,9 @@ def executeCalculation():
     finalDistanceString = tk.StringVar()
     groundSpeedString = tk.StringVar()
     initialLocationString = tk.StringVar()
-    initialName = tk.StringVar()
-    destinationName = tk.StringVar()
+    initialNameString = tk.StringVar()
+    destinationNameString = tk.StringVar()
     destinationLocationString = tk.StringVar()
-    initialNameDisplay.config(text=initialName)
-    finalTimeDisplay.config(text=finalTimeString)
-    finalDistance.config(text=finalDistanceString)
-    ttkgroundSpeed.config(text=groundSpeedString)
-    initialLocation.config(text=initialLocationString)
-    destinationLocation.config(text=destinationLocationString)
-    destinationNametk.config(text=destinationName)
     groundSpeedString = round(groundSpeed,2), "mph"
     initialLocationString = "↑ {}, {}".format(initialCity, initialCountryName)
     destinationLocationString = "↓ {}, {}".format(destinationCity, destinationCountryName)
@@ -270,11 +300,20 @@ def executeCalculation():
         finalTimeString = round(flightMinutes, 1), "minutes"
     else:
         finalTimeString = flightHours , "hours" , flightMinutes, "minutes"
+    initialNameString = initialName
+    destinationNameString = destinationName
     gui.geometry("500x150")
+    initialNameDisplay.config(text=initialNameString)
+    finalTimeDisplay.config(text=finalTimeString)
+    finalDistance.config(text=finalDistanceString)
+    ttkgroundSpeed.config(text=groundSpeedString)
+    initialLocation.config(text=initialLocationString)
+    destinationLocation.config(text=destinationLocationString)
+    destinationNametk.config(text=destinationNameString)
 
     
 execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37, fg="gray97", bg="gray30", bd=0)
-execute.grid(columnspan=2)
+execute.grid(row=6, columnspan=2)
 
 gui.mainloop()
 
