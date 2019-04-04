@@ -5,6 +5,12 @@
 
 import math
 import tkinter as tk
+from weather import Weather, Unit
+
+weather = Weather(unit=Unit.CELSIUS)
+location = weather.lookup_by_location('denver')
+condition = location.condition
+print(condition.text)
 
 radius = 3958 #radius of earth(in miles)
 icaoList = []
@@ -15,6 +21,8 @@ codeList= []
 countryList = []
 orderedCodeList = []
 cityNameList = []
+intervalLatList = []
+intervalLonList = []
 source = "DESKTOP"
 #if source is personal desktop, enter DESKTOP for source
 #if source is personal laptop, enter LAPTOP for source
@@ -167,6 +175,13 @@ def countryCodeInterpreter():
 
 def airportDistance():
     global distance
+    global dlon
+    global dlat
+    global lat1
+    global lat2
+    global lon1
+    global lon2
+    global c
     lat1 = float(latitude1)
     lon1 = float(longitude1)
     lat2 = float(latitude2)
@@ -181,7 +196,52 @@ def airportDistance():
 #this function calculates the great circle distance between two points on Earth using the 
 #haversine formula. 
 
-def windVectorAddition():
+def intermediateIntervalCalculation():
+    global intervalFraction
+    global intervalA
+    global intervalB
+    global intervalX
+    global distance
+    global intervalY
+    global intervalZ
+    global intervalCoordX
+    global intervalCoordY
+    global lat1
+    global lon1
+    global lat2
+    global distance
+    global angularDistance
+    global lon2
+    global c
+    angularDistance = c
+    intervalA = math.sin((1 - intervalFraction) * angularDistance)/math.sin(angularDistance)
+    intervalB = math.sin(angularDistance * intervalFraction) / math.sin(angularDistance)
+    intervalX = (intervalA * math.cos(lat1) * math.cos(lon1)) + (intervalB * math.cos(lat2) * math.cos(lon2))
+    intervalY = intervalA * math.cos(lat1) * math.sin(lon1) + intervalB * math.cos(lat2) * math.sin(lon2)
+    intervalZ = intervalA * math.sin(lat1) + intervalB * math.sin(lat2)
+    intervalRoot = math.sqrt(intervalX ** 2 + intervalY ** 2)
+    intervalCoordX = math.atan2(intervalZ, intervalRoot)
+    intervalCoordY = math.atan2(intervalY, intervalX)
+
+def intervalAppend():
+    global intervalFraction
+    global intervalLatList
+    global intervalLonList
+    global intervalCoordX
+    global intervalCoordY
+    global repetitionConstant
+    global intervalForLoop
+    intervalForLoop = 1
+    while intervalForLoop < repetitionConstant + 1:
+        intervalFraction = intervalForLoop / repetitionConstant
+        intermediateIntervalCalculation()
+        intervalLatList.append(math.degrees(intervalCoordX))
+        intervalLonList.append(math.degrees(intervalCoordY))
+        intervalForLoop = intervalForLoop + 1
+    print(intervalLatList, intervalLonList)
+    print(len(intervalLatList), len(intervalLonList))
+
+def manualWindVectorAddition():
     global groundSpeed
     global indicatedAirSpeed
     global windSpeed
@@ -203,6 +263,7 @@ def flightTime():
     if timeOfFlight < 1:
         flightMinutes = timeOfFlight * 60
 
+
 #this function uses the calculated groundspeed and distance to calculate flight time. In this
 #function, 45 minutes are accounted for climb and descent where the aircraft isn't travelling
 #at maximum cruise speed. 
@@ -210,17 +271,14 @@ def flightTime():
 
 gui = tk.Tk()
 gui.configure(background = "grey17")
-gui.title(" ")
+gui.title("Flight Distance Calculator")
 gui.geometry("250x150")
-
 
 initialInput = tk.StringVar()
 destinationInput = tk.StringVar()
 speedInput = tk.StringVar()
 windSpeedInput = tk.StringVar()
 windAngleInput = tk.StringVar()
-
-
 
 initialField = tk.Entry(gui, textvariable=initialInput, bg="grey30", fg="gray97", bd=0)
 destinationField = tk.Entry(gui, textvariable = destinationInput, bg="grey30", fg="gray97", bd=0)
@@ -267,6 +325,7 @@ destinationNametk.grid(row=6, column=3)
 def executeCalculation():
     airportListSetup()
     global initialTarget
+    global repetitionConstant
     global destinationTarget
     global indicatedAirSpeed
     global windAngleDifference
@@ -275,6 +334,8 @@ def executeCalculation():
     global flightMinutes
     global initialName
     global destinationName
+    global intervalFraction
+    global latitude1, latitude2, longitude1, longitude2
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
@@ -283,8 +344,11 @@ def executeCalculation():
     linearCoordinateSearch()
     countryCodeInterpreter()
     airportDistance()
-    windVectorAddition()
+    manualWindVectorAddition()
     flightTime()
+    print(latitude1, longitude1, latitude2, longitude2)
+    repetitionConstant = 15
+    intervalAppend()
     finalTimeString = tk.StringVar()
     finalDistanceString = tk.StringVar()
     groundSpeedString = tk.StringVar()
@@ -316,6 +380,16 @@ execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37,
 execute.grid(row=6, columnspan=2)
 
 gui.mainloop()
+
+
+
+
+
+
+
+
+
+
 
 
 
