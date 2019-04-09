@@ -5,12 +5,21 @@
 
 import math
 import tkinter as tk
-from weather import Weather, Unit
+import json
+import requests
 
-weather = Weather(unit=Unit.CELSIUS)
-location = weather.lookup_by_location('denver')
-condition = location.condition
-print(condition.text)
+def apiGet():
+    apiKey = '85ec2e4dc825aa5dec0c055ec5'
+    hdr = { 'X-Api-Key': apiKey }
+    baseUrlStation = 'https://api.checkwx.com/station/'
+    baseUrlMetar = 'https://api.checkwx.com/metar/'
+    initialStationIcao = "kden"
+    destinationStationIcao = "ksfo"
+    combinedStationUrl = baseUrlStation + initialStationIcao + "," + destinationStationIcao
+    stationReq = requests.get(combinedStationUrl, headers=hdr)
+    jsonData = json.loads(stationReq.text)
+    print(jsonData)
+
 
 radius = 3958 #radius of earth(in miles)
 icaoList = []
@@ -26,8 +35,8 @@ intervalLonList = []
 source = "DESKTOP"
 #if source is personal desktop, enter DESKTOP for source
 #if source is personal laptop, enter LAPTOP for source
-#currently this program only works with two of my personal computers because the data required to run the program is stored only on these two computers. 
-#full external support coming soon
+#if source is checkwx, enter CHECKWX for source
+#use local source(DESKTOP or LAPTOP) to conserve API calls
 
 def airportListSetup():
     if source == "LAPTOP":
@@ -238,8 +247,6 @@ def intervalAppend():
         intervalLatList.append(math.degrees(intervalCoordX))
         intervalLonList.append(math.degrees(intervalCoordY))
         intervalForLoop = intervalForLoop + 1
-    print(intervalLatList, intervalLonList)
-    print(len(intervalLatList), len(intervalLonList))
 
 def manualWindVectorAddition():
     global groundSpeed
