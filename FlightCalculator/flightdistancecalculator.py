@@ -8,17 +8,75 @@ import tkinter as tk
 import json
 import requests
 
-def apiGet():
-    apiKey = '85ec2e4dc825aa5dec0c055ec5'
+apiKey = 'API-KEY-KERE'
+#insert free checkwx api key here
+
+initialTarget = 'kden'
+destinationTarget = 'klax'
+
+def apiStationGet():
+    global initialTarget
+    global destinationTarget
+    global initialAirportGetName
+    global initialName
+    global destinationName
+    global initialCountryName
+    global destinationCountryName
+    global apiKey
+    global latitude1
+    global latitude2
+    global longitude1
+    global longitude2
+    global initialNameID
+    global destinationNameID
+    global initialAirportGetCountryStr
+    global destinationAirportGetCountryStr
+    global initialAirportGetCity
+    global destinationAirportGetCity
     hdr = { 'X-Api-Key': apiKey }
     baseUrlStation = 'https://api.checkwx.com/station/'
-    baseUrlMetar = 'https://api.checkwx.com/metar/'
-    initialStationIcao = "kden"
-    destinationStationIcao = "ksfo"
+    initialStationIcao = initialTarget.lower()
+    destinationStationIcao = destinationTarget.lower()
     combinedStationUrl = baseUrlStation + initialStationIcao + "," + destinationStationIcao
     stationReq = requests.get(combinedStationUrl, headers=hdr)
     jsonData = json.loads(stationReq.text)
-    print(jsonData)
+    jsonFinalData = jsonData.get('data')
+    initialAirportGet = jsonFinalData[0]
+    initialLatitudeGet = initialAirportGet['latitude']
+    initialLatitudeGetFloat = float(initialLatitudeGet['decimal'])
+    initialLongitudeGet = initialAirportGet['longitude']
+    initialLongitudeGetFloat = float(initialLongitudeGet['decimal'])
+    destinationAirportGet = jsonFinalData[1]
+    destinationLatitudeGet = destinationAirportGet['latitude']
+    destinationLatitudeGetFloat = float(destinationLatitudeGet['decimal'])
+    destinationLongitudeGet = destinationAirportGet['longitude']
+    destinationLongitudeGetFloat = float(destinationLongitudeGet['decimal'])
+    initialAirportGetName = initialAirportGet['name']
+    destinationAirportGetName = destinationAirportGet['name']
+    initialAirportGetCountryCode = initialAirportGet['country']
+    initialAirportGetCountryCodeStr = str(initialAirportGetCountryCode['code'])
+    destinationAirportGetCountryCode = destinationAirportGet['country']
+    destinationAirportGetCountryCodeStr = str(destinationAirportGetCountryCode['code'])
+    initialAirportGetCity = initialAirportGet['city']
+    destinationAirportGetCity = destinationAirportGet['city']
+    if initialAirportGetCountryCodeStr == 'US':
+        initialAirportGetCountry = initialAirportGet['state']
+        initialAirportGetCountryStr = initialAirportGetCountry['name']
+    else:
+        initialAirportGetCountry = initialAirportGet['country']
+        initialAirportGetCountryStr = initialAirportGetCountry['name']
+    if destinationAirportGetCountryCodeStr == 'US':
+        destinationAirportGetCountry = destinationAirportGet['state']
+        destinationAirportGetCountryStr = destinationAirportGetCountry['name']
+    else:
+        destinationAirportGetCountry = destinationAirportGet['country']
+        destinationAirportGetCountryStr = destinationAirportGetCountry['name']
+    initialNameID = str(initialAirportGetName) + ' Airport'
+    destinationNameID = str(destinationAirportGetName) + ' Airport'
+    latitude1 = initialLatitudeGetFloat
+    latitude2 = destinationLatitudeGetFloat
+    longitude1 = initialLongitudeGetFloat
+    longitude2 = destinationLongitudeGetFloat
 
 
 radius = 3958 #radius of earth(in miles)
@@ -32,7 +90,7 @@ orderedCodeList = []
 cityNameList = []
 intervalLatList = []
 intervalLonList = []
-source = "DESKTOP"
+source = "CHECKWX"
 #if source is personal desktop, enter DESKTOP for source
 #if source is personal laptop, enter LAPTOP for source
 #if source is checkwx, enter CHECKWX for source
@@ -330,7 +388,6 @@ destinationLocation.grid(row=5, column=3)
 destinationNametk.grid(row=6, column=3)
 
 def executeCalculation():
-    airportListSetup()
     global initialTarget
     global repetitionConstant
     global destinationTarget
@@ -343,17 +400,30 @@ def executeCalculation():
     global destinationName
     global intervalFraction
     global latitude1, latitude2, longitude1, longitude2
+    global source
+    global initialNameID
+    global destinationNameID
+    global initialAirportGetCity
+    global destinationAirportGetCity
+    global initialAirportGetCountryStr
+    global destinationAirportGetCountryStr
+    if source == "DESKTOP":
+        airportListSetup()
+    if source == "LAPTOP":
+        airportListSetup()
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
     windSpeed = float(windSpeedInput.get())
     windAngleDifference = float(windAngleInput.get())
-    linearCoordinateSearch()
-    countryCodeInterpreter()
+    if source == "DESKTOP":
+        linearCoordinateSearch()
+        countryCodeInterpreter()
+    if source == "CHECKWX":
+        apiStationGet()
     airportDistance()
     manualWindVectorAddition()
     flightTime()
-    print(latitude1, longitude1, latitude2, longitude2)
     repetitionConstant = 15
     intervalAppend()
     finalTimeString = tk.StringVar()
@@ -364,6 +434,16 @@ def executeCalculation():
     destinationNameString = tk.StringVar()
     destinationLocationString = tk.StringVar()
     groundSpeedString = round(groundSpeed,2), "mph"
+    if source == "CHECKWX":
+        initialNameString = initialNameID
+        destinationNameString = destinationNameID
+        initialCity = initialAirportGetCity
+        destinationCity = destinationAirportGetCity
+        initialCountryName = initialAirportGetCountryStr
+        destinationCountryName = destinationAirportGetCountryStr
+    else:
+        initialNameString = initialName
+        destinationNameString = destinationName
     initialLocationString = "↑ {}, {}".format(initialCity, initialCountryName)
     destinationLocationString = "↓ {}, {}".format(destinationCity, destinationCountryName)
     finalDistanceString = round(distance, 2), "miles"
@@ -371,8 +451,6 @@ def executeCalculation():
         finalTimeString = round(flightMinutes, 1), "minutes"
     else:
         finalTimeString = flightHours , "hours" , flightMinutes, "minutes"
-    initialNameString = initialName
-    destinationNameString = destinationName
     gui.geometry("500x150")
     initialNameDisplay.config(text=initialNameString)
     finalTimeDisplay.config(text=finalTimeString)
