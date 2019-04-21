@@ -8,11 +8,10 @@ import tkinter as tk
 import json
 import requests
 
-apiKey = 'API-KEY-KERE'
+apiKey = 'ENTER API KEY HERE'
 #insert free checkwx api key here
+#sign up at www.checkwx.com for a free api key
 
-initialTarget = 'kden'
-destinationTarget = 'klax'
 
 def apiStationGet():
     global initialTarget
@@ -91,154 +90,6 @@ cityNameList = []
 intervalLatList = []
 intervalLonList = []
 source = "CHECKWX"
-#if source is personal desktop, enter DESKTOP for source
-#if source is personal laptop, enter LAPTOP for source
-#if source is checkwx, enter CHECKWX for source
-#use local source(DESKTOP or LAPTOP) to conserve API calls
-
-def airportListSetup():
-    if source == "LAPTOP":
-        f = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\icao.txt", 'r')
-        for line in f:
-            icaoList.append(line.strip())
-    
-        latitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\latitudes.txt", 'r')
-        for line in latitudeSetup:
-            latitudeList.append(line.strip())
-    
-        longitudeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\longitudes.txt", 'r')
-        for line in longitudeSetup: 
-            longitudeList.append(line.strip())
-
-        nameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\airportNames.txt", 'r', encoding="utf8")
-        for line in nameSetup:
-            airportNameList.append(line.strip())
-    
-        codeSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\codes.txt", 'r', encoding = "utf8")
-        for line in codeSetup:
-            codeList.append(line.strip())
-        
-        countrySetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\countries.txt", 'r', encoding="utf8")
-        for line in countrySetup:
-            countryList.append(line.strip())
-
-        orderedAirportSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\orderedairportcodes.txt", 'r', encoding="utf8")
-        for line in orderedAirportSetup:
-            orderedCodeList.append(line.strip())
-    
-        cityNameSetup = open("C:\\Users\\siddh\\Documents\\Python\\Flight Distance Calculator\\citynames.txt", 'r', encoding="utf8")
-        for line in cityNameSetup:
-            cityNameList.append(line.strip())
-    if source == "DESKTOP":
-        f = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\icao.txt", 'r')
-        for line in f:
-            icaoList.append(line.strip())
-    
-        latitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\latitudes.txt", 'r')
-        for line in latitudeSetup:
-            latitudeList.append(line.strip())
-    
-        longitudeSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\longitudes.txt", 'r')
-        for line in longitudeSetup: 
-            longitudeList.append(line.strip())
-
-        nameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\airportNames.txt", 'r', encoding="utf8")
-        for line in nameSetup:
-            airportNameList.append(line.strip())
-    
-        codeSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\codes.txt", 'r', encoding = "utf8")
-        for line in codeSetup:
-            codeList.append(line.strip())
-        
-        countrySetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\countries.txt", 'r', encoding="utf8")
-        for line in countrySetup:
-            countryList.append(line.strip())
-
-        orderedAirportSetup = open("D:\\Documents\School\\Code\\FlightDistanceCalculator\\orderedairportcodes.txt", 'r', encoding="utf8")
-        for line in orderedAirportSetup:
-            orderedCodeList.append(line.strip())
-    
-        cityNameSetup = open("D:\\Documents\\School\\Code\\FlightDistanceCalculator\\citynames.txt", 'r', encoding="utf8")
-        for line in cityNameSetup:
-            cityNameList.append(line.strip())
-    
-      
-
-#imports information for all large and medium airports in the world and appends each piece
-# of information into a separate list for later reference. 
-
-def linearCoordinateSearch():
-    global initialTarget
-    global destinationTarget
-    global initialPosition
-    global destinationPosition
-    global initialFound
-    global destinationFound
-    initialPosition = 0
-    destinationPosition = 0
-    initialFound = False
-    destinationFound = False
-    while initialPosition < len(icaoList) and not initialFound:
-        if icaoList[initialPosition] == initialTarget:
-            initialFound = True
-        else:
-            initialPosition = initialPosition + 1
-    while destinationPosition < len(icaoList) and not destinationFound:
-        if icaoList[destinationPosition] == destinationTarget:
-            destinationFound = True
-        else:
-            destinationPosition = destinationPosition + 1
-    if initialFound == True:
-        global latitude1
-        global longitude1
-        global initialName
-        global initialCode
-        global initialCity
-        latitude1 = latitudeList[initialPosition]
-        longitude1 = longitudeList[initialPosition]
-        initialName = str(airportNameList[initialPosition])
-        initialCode = str(orderedCodeList[initialPosition])
-        initialCity = str(cityNameList[initialPosition])
-    if destinationFound == True:
-        global latitude2
-        global longitude2
-        global destinationName
-        global destinationCode
-        global destinationCity
-        latitude2 = latitudeList[destinationPosition]
-        longitude2 = longitudeList[destinationPosition]
-        destinationName = str(airportNameList[destinationPosition])
-        destinationCode = str(orderedCodeList[destinationPosition])
-        destinationCity = str(cityNameList[destinationPosition])
-    
-    if initialFound == False:
-        print("The initial airport could not be found")
-    if destinationFound == False:
-        print("The destination airport could not be found")
-    
-    
-def countryCodeInterpreter():
-    global initialCode
-    global destinationCode
-    global initialCountryName
-    global destinationCountryName
-    initialCodeFound = False
-    initialCodePosition = 0
-    while initialCodePosition < len(codeList) and not initialCodeFound:
-        if codeList[initialCodePosition] == initialCode:
-            initialCodeFound = True
-        else:
-            initialCodePosition = initialCodePosition + 1
-    destinationCodeFound = False
-    destinationCodePosition = 0
-    while destinationCodePosition < len(codeList) and not destinationCodeFound:
-        if codeList[destinationCodePosition] == destinationCode:
-            destinationCodeFound = True
-        else:
-            destinationCodePosition = destinationCodePosition + 1
-    initialCountryName = countryList[initialCodePosition]
-    destinationCountryName = countryList[destinationCodePosition]
-    
 
 def airportDistance():
     global distance
@@ -263,48 +114,6 @@ def airportDistance():
 #this function calculates the great circle distance between two points on Earth using the 
 #haversine formula. 
 
-def intermediateIntervalCalculation():
-    global intervalFraction
-    global intervalA
-    global intervalB
-    global intervalX
-    global distance
-    global intervalY
-    global intervalZ
-    global intervalCoordX
-    global intervalCoordY
-    global lat1
-    global lon1
-    global lat2
-    global distance
-    global angularDistance
-    global lon2
-    global c
-    angularDistance = c
-    intervalA = math.sin((1 - intervalFraction) * angularDistance)/math.sin(angularDistance)
-    intervalB = math.sin(angularDistance * intervalFraction) / math.sin(angularDistance)
-    intervalX = (intervalA * math.cos(lat1) * math.cos(lon1)) + (intervalB * math.cos(lat2) * math.cos(lon2))
-    intervalY = intervalA * math.cos(lat1) * math.sin(lon1) + intervalB * math.cos(lat2) * math.sin(lon2)
-    intervalZ = intervalA * math.sin(lat1) + intervalB * math.sin(lat2)
-    intervalRoot = math.sqrt(intervalX ** 2 + intervalY ** 2)
-    intervalCoordX = math.atan2(intervalZ, intervalRoot)
-    intervalCoordY = math.atan2(intervalY, intervalX)
-
-def intervalAppend():
-    global intervalFraction
-    global intervalLatList
-    global intervalLonList
-    global intervalCoordX
-    global intervalCoordY
-    global repetitionConstant
-    global intervalForLoop
-    intervalForLoop = 1
-    while intervalForLoop < repetitionConstant + 1:
-        intervalFraction = intervalForLoop / repetitionConstant
-        intermediateIntervalCalculation()
-        intervalLatList.append(math.degrees(intervalCoordX))
-        intervalLonList.append(math.degrees(intervalCoordY))
-        intervalForLoop = intervalForLoop + 1
 
 def manualWindVectorAddition():
     global groundSpeed
@@ -407,25 +216,16 @@ def executeCalculation():
     global destinationAirportGetCity
     global initialAirportGetCountryStr
     global destinationAirportGetCountryStr
-    if source == "DESKTOP":
-        airportListSetup()
-    if source == "LAPTOP":
-        airportListSetup()
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
     windSpeed = float(windSpeedInput.get())
     windAngleDifference = float(windAngleInput.get())
-    if source == "DESKTOP":
-        linearCoordinateSearch()
-        countryCodeInterpreter()
     if source == "CHECKWX":
         apiStationGet()
     airportDistance()
     manualWindVectorAddition()
     flightTime()
-    repetitionConstant = 15
-    intervalAppend()
     finalTimeString = tk.StringVar()
     finalDistanceString = tk.StringVar()
     groundSpeedString = tk.StringVar()
@@ -441,9 +241,6 @@ def executeCalculation():
         destinationCity = destinationAirportGetCity
         initialCountryName = initialAirportGetCountryStr
         destinationCountryName = destinationAirportGetCountryStr
-    else:
-        initialNameString = initialName
-        destinationNameString = destinationName
     initialLocationString = "↑ {}, {}".format(initialCity, initialCountryName)
     destinationLocationString = "↓ {}, {}".format(destinationCity, destinationCountryName)
     finalDistanceString = round(distance, 2), "miles"
@@ -465,6 +262,10 @@ execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37,
 execute.grid(row=6, columnspan=2)
 
 gui.mainloop()
+
+
+
+
 
 
 
