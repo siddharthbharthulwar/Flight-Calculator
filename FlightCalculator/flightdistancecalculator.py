@@ -3,10 +3,10 @@
 #currently supports 5178 airports around the world(large and medium airports)
 #encoding utf-8
 
-import math
-import tkinter as tk
-import json
-import requests
+import math #for haversine formula
+import tkinter as tk #for gui 
+import json #for api functionality
+import requests #for api functionality
 
 apiKey = 'ENTER API KEY HERE'
 #insert free checkwx api key here
@@ -14,28 +14,15 @@ apiKey = 'ENTER API KEY HERE'
 
 
 def apiStationGet():
-    global initialTarget
-    global destinationTarget
-    global initialAirportGetName
-    global initialName
-    global destinationName
-    global initialCountryName
-    global destinationCountryName
-    global apiKey
-    global latitude1
-    global latitude2
-    global longitude1
-    global longitude2
-    global initialNameID
-    global destinationNameID
-    global initialAirportGetCountryStr
-    global destinationAirportGetCountryStr
-    global initialAirportGetCity
-    global destinationAirportGetCity
+    global initialTarget, destinationTarget, initialAirportGetName, apiKey, latitude1, latitude2, longitude1, longitude2, initialNameID, destinationNameID
+    global initialAirportGetCountryStr, destinationAirportGetCountryStr, initialAirportGetCity, destinationAirportGetCity
+    #header for api request including checkwx api key
     hdr = { 'X-Api-Key': apiKey }
     baseUrlStation = 'https://api.checkwx.com/station/'
+    #making both the initial airport and destination airport codes lowercase for api to read
     initialStationIcao = initialTarget.lower()
     destinationStationIcao = destinationTarget.lower()
+    #final api request url for both initial and destination airports
     combinedStationUrl = baseUrlStation + initialStationIcao + "," + destinationStationIcao
     stationReq = requests.get(combinedStationUrl, headers=hdr)
     jsonData = json.loads(stationReq.text)
@@ -58,6 +45,8 @@ def apiStationGet():
     destinationAirportGetCountryCodeStr = str(destinationAirportGetCountryCode['code'])
     initialAirportGetCity = initialAirportGet['city']
     destinationAirportGetCity = destinationAirportGet['city']
+    # if an airport is in the united states, its location is displayed as CITY, STATE
+    # otherwise, the airport's location is displayed as CITY, COUNTRY
     if initialAirportGetCountryCodeStr == 'US':
         initialAirportGetCountry = initialAirportGet['state']
         initialAirportGetCountryStr = initialAirportGetCountry['name']
@@ -92,14 +81,7 @@ intervalLonList = []
 source = "CHECKWX"
 
 def airportDistance():
-    global distance
-    global dlon
-    global dlat
-    global lat1
-    global lat2
-    global lon1
-    global lon2
-    global c
+    global distance, dlon, dlat, lat1, lat2, lon1, lon2, c
     lat1 = float(latitude1)
     lon1 = float(longitude1)
     lat2 = float(latitude2)
@@ -116,21 +98,14 @@ def airportDistance():
 
 
 def manualWindVectorAddition():
-    global groundSpeed
-    global indicatedAirSpeed
-    global windSpeed
-    global windAngleDifference
+    global groundSpeed, indicatedAirSpeed, windAngleDifference, windSpeed
     groundSpeed = math.sqrt(((indicatedAirSpeed ** 2) + windSpeed) - 2 * (indicatedAirSpeed * windSpeed * math.cos(windAngleDifference)))
 
 #this function accounts for the speed of wind affecting the flight of the aircraft using vector addition
 
 def flightTime():
-    global timeOfFlight
-    global groundSpeed
-    global flightHours
-    global flightMinutes
+    global timeOfFlight, groundSpeed, flightHours, flightMinutes
     timeOfFlight = ((distance - 100)/groundSpeed) + 0.45
-
     flightHours = int(timeOfFlight)
     if timeOfFlight >= 1:
         flightMinutes = int((timeOfFlight % flightHours) * 60)
@@ -142,6 +117,8 @@ def flightTime():
 #function, 45 minutes are accounted for climb and descent where the aircraft isn't travelling
 #at maximum cruise speed. 
 
+
+#gui setup
 
 gui = tk.Tk()
 gui.configure(background = "grey17")
@@ -196,26 +173,12 @@ initialLocation.grid(row=1, column=3)
 destinationLocation.grid(row=5, column=3)
 destinationNametk.grid(row=6, column=3)
 
+#called when the calculate button is pressed on gui; compiles all functions in one action
+
 def executeCalculation():
-    global initialTarget
-    global repetitionConstant
-    global destinationTarget
-    global indicatedAirSpeed
-    global windAngleDifference
-    global windSpeed
-    global flightHours
-    global flightMinutes
-    global initialName
-    global destinationName
-    global intervalFraction
+    global initialTarget, destinationTarget, indicatedAirSpeed, windAngleDifference, windSpeed, flightHours, flightMinutes
     global latitude1, latitude2, longitude1, longitude2
-    global source
-    global initialNameID
-    global destinationNameID
-    global initialAirportGetCity
-    global destinationAirportGetCity
-    global initialAirportGetCountryStr
-    global destinationAirportGetCountryStr
+    global source, initialNameID, destinationNameID, initialAirportGetCity, destinationAirportGetCity, initialAirportGetCountryStr, destinationAirportGetCountryStr
     initialTarget = str(initialInput.get())
     destinationTarget = str(destinationInput.get())
     indicatedAirSpeed = float(speedInput.get())
@@ -257,10 +220,12 @@ def executeCalculation():
     destinationLocation.config(text=destinationLocationString)
     destinationNametk.config(text=destinationNameString)
 
-    
+#calculate button with executeCalculation function triggered by button press
 execute = tk.Button(gui, text="Calculate", command=executeCalculation, width=37, fg="gray97", bg="gray30", bd=0)
 execute.grid(row=6, columnspan=2)
 
+
+#keeps tkinter window open until user closes
 gui.mainloop()
 
 
