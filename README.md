@@ -3,6 +3,7 @@ Simple flight time and distance calculator between any two airports in the world
 
 For this to work, you must obtain a working CHECKWX API Key. This can be found at 
 https://www.checkwx.com/api/newkey.
+I am not in any way affiliated with CheckWX and my use of this API is purely noncommercial. 
 
 API keys from CheckWX are free, but are limited to 2000 calls per month(more than enough for this project). 
 
