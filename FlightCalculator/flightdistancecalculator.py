@@ -2,6 +2,7 @@
 #airports in the world. Input all speeds in terms of miles and use ICAO codes of airports
 #currently supports 5178 airports around the world(large and medium airports)
 #encoding utf-8
+#don't ask why everything is in global variables here, this wasnt my best work
 
 import math #for haversine formula
 import tkinter as tk #for gui 
